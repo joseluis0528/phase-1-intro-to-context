@@ -38,3 +38,13 @@ function createTimeOutEvent(obj, dateStamp) {
     ]
     return obj;
 }
+
+function hoursWorkedOnDate(obj, date) {
+    const clockIn = obj.timeInEvents.find(record => record.date === date);
+    const clockOut = obj.timeOutEvents.find(record => record.date === date);
+    return parseInt(clockOut.hour * 0.01) - parseInt(clockIn.hour * 0.01);
+}
+
+function wagesEarnedOnDate(obj, date) {
+    return hoursWorkedOnDate(obj, date) * obj.payPerHour
+}
