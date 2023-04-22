@@ -46,5 +46,5 @@ function hoursWorkedOnDate(obj, date) {
 }
 
 function wagesEarnedOnDate(obj, date) {
-    return hoursWorkedOnDate(obj, date) * obj.payPerHour
+    return hoursWorkedOnDate(obj, date) * obj.payPerHour;
 }
