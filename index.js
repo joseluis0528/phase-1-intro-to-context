@@ -15,36 +15,50 @@ function createEmployeeRecords(array) {
     return array.map(eployee => createEmployeeRecord(eployee));
 }
 
-function createTimeInEvent(obj, dateStamp) {
+function createTimeInEvent(employee, dateStamp) {
     const timeAndDate = dateStamp.split(' ');
-    obj.timeInEvents = [
-        {
-            type: 'TimeIn',
-            hour: parseInt(timeAndDate[1]),
-            date: timeAndDate[0]
-        }
-    ]
-    return obj;
+    const newEvent = {
+        type: 'TimeIn',
+        hour: parseInt(timeAndDate[1]),
+        date: timeAndDate[0]
+    }
+    employee.timeInEvents.push(newEvent);
+    return employee;
 }
 
-function createTimeOutEvent(obj, dateStamp) {
+function createTimeOutEvent(employee, dateStamp) {
     const timeAndDate = dateStamp.split(' ');
-    obj.timeOutEvents = [
-        {
-            type: 'TimeOut',
-            hour: parseInt(timeAndDate[1]),
-            date: timeAndDate[0]
-        }
-    ]
-    return obj;
+    const newEvent = {
+        type: 'TimeOut',
+        hour: parseInt(timeAndDate[1]),
+        date: timeAndDate[0]
+    } 
+    employee.timeOutEvents.push(newEvent);
+    return employee;
 }
 
-function hoursWorkedOnDate(obj, date) {
-    const clockIn = obj.timeInEvents.find(record => record.date === date);
-    const clockOut = obj.timeOutEvents.find(record => record.date === date);
+function hoursWorkedOnDate(employee, date) {
+    const clockIn = employee.timeInEvents.find(record => record.date === date);
+    const clockOut = employee.timeOutEvents.find(record => record.date === date);
     return parseInt(clockOut.hour * 0.01) - parseInt(clockIn.hour * 0.01);
 }
 
-function wagesEarnedOnDate(obj, date) {
-    return hoursWorkedOnDate(obj, date) * obj.payPerHour;
+function wagesEarnedOnDate(employee, date) {
+    return hoursWorkedOnDate(employee, date) * employee.payPerHour;
+}
+
+function allWagesFor(employee) {
+    const daysWorked = employee.timeInEvents.map(day => day.date)
+    const totalWages = daysWorked.reduce((memo, date) => {
+        return memo + wagesEarnedOnDate(employee, date);
+    }, 0)
+    return totalWages;
+}
+
+function calculatePayroll(employees) {
+    const allWages = employees.map(employee => allWagesFor(employee));
+    const totalWages = allWages.reduce((memo, employee) => {
+        return memo + employee;
+    }, 0)
+    return totalWages;
 }
